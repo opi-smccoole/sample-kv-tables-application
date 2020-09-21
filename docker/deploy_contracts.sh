@@ -126,13 +126,15 @@ setabi eosio $CONTRACTS_DIR/system/system.abi
 
 # token
 sleep 1s
-create_account kvtable $SYSTEM_ACCOUNT_PUBLIC_KEY $SYSTEM_ACCOUNT_PRIVATE_KEY
+create_account todo $SYSTEM_ACCOUNT_PUBLIC_KEY $SYSTEM_ACCOUNT_PRIVATE_KEY
 
 sleep 1s
-cleos set abi kvtable $CONTRACTS_DIR/kv_tables/kv_tables.abi -p kvtable@active -p eosio@active
-cleos set code kvtable $CONTRACTS_DIR/kv_tables/kv_tables.wasm -p kvtable@active -p eosio@active
+cleos set abi todo $CONTRACTS_DIR/kv_todo/kv_todo.abi -p todo@active -p eosio@active
+cleos set code todo $CONTRACTS_DIR/kv_todo/kv_todo.wasm -p todo@active -p eosio@active
 
-cleos push action eosio init "[]" -p eosio@active
+cleos push action todo upsert '["1d0cb65c-a63e-48e7-bee7-ca99463aa698", "todo", "task1", false]' -p todo@active
+cleos push action todo upsert '["b728a7c4-cb53-4e08-b243-d60ea5e28c52", "todo", "task2", false]' -p todo@active
+cleos push action todo upsert '["1bfdf2fc-a5ff-4eeb-ac27-145a8ded295a", "todo", "task3", false]' -p todo@active
 
 echo "All done initializing the blockchain"
 

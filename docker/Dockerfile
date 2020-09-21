@@ -94,7 +94,7 @@ USER gitpod
 WORKDIR /home/gitpod
 RUN git clone https://github.com/EOSIO/eosio.cdt.git \
  && cd eosio.cdt \
- && git checkout eosio-cdt-2.1-staging-c \
+ && git checkout develop \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd build \
