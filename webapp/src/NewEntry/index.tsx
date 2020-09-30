@@ -1,12 +1,50 @@
-import React from 'react';
-import { Api } from 'eosjs';
+import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid';
+
+import { Entry } from '../'
 
 interface NewEntryProps {
-    api: Api | undefined
+    upsert: (entry: Entry) => Promise<void>
 }
 
-const NewEntry: React.FC<NewEntryProps> = ({ api }: NewEntryProps) => {
-    return null;
-}
+export const NewEntry: React.FC<NewEntryProps> = ({ upsert }: NewEntryProps) => {
+    const [task, setTask] = useState<string>('');
 
-export default NewEntry;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.value) return setTask('');
+        setTask(e.target.value);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter') return;
+        create();
+    };
+
+    const create = async () => {
+        if (task === '') return;
+        await upsert({
+            uuid: uuid(),
+            account_name: 'todo',
+            task,
+            checked: false
+        });
+        setTask('');
+    }
+
+    return (
+        <div className="ui raised segment">
+            <div className="ui fluid action input">
+                <input
+                    className='ui input'
+                    type='text'
+                    placeholder='New Task'
+                    name='task'
+                    value={task}
+                    onChange={handleChange}
+                    onKeyPress={handleKeyPress}>
+                </input>
+                <button className="ui icon button" onClick={e => create()}><i className="plus icon"></i></button>
+            </div>
+        </div>
+    );
+}

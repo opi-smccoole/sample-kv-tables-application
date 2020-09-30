@@ -10,7 +10,9 @@
   "devDependencies": {
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
+    "@types/uuid": "^8.3.0",
     "css-loader": "^4.2.0",
+    "file-loader": "^6.1.0",
     "source-map-loader": "^1.0.1",
     "style-loader": "^1.2.1",
     "ts-loader": "^8.0.2",
@@ -20,8 +22,10 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "eosjs": "21.1.0-20-c31c737",
+    "eosjs": "^21.1.0-24-c73b44d",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "semantic-ui-css": "^2.4.1",
+    "uuid": "^8.3.0"
   }
 }

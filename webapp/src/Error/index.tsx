@@ -4,7 +4,7 @@ interface ErrorProps {
     error: string;
 }
 
-const Error: React.FC<ErrorProps> = ({ error }: ErrorProps) => {
+export const Error: React.FC<ErrorProps> = ({ error }: ErrorProps) => {
     return (
         <div className='error-container'>
             <div className='errorHeader'>Error:</div>
@@ -12,5 +12,3 @@ const Error: React.FC<ErrorProps> = ({ error }: ErrorProps) => {
         </div>
     );
 };
-
-export default Error;
