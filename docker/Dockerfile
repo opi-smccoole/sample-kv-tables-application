@@ -44,8 +44,7 @@ RUN yes | unminimize \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
      nodejs \
- && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* \
- && npm i -g yarn typescript
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 ENV LANG=en_US.UTF-8
 
 ### cmake
@@ -76,8 +75,8 @@ RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
 ENV HOME=/home/gitpod
 
 ### eosio
-WORKDIR /root
 USER root
+WORKDIR /root
 RUN git clone https://github.com/EOSIO/eos.git \
  && cd eos \
  && git checkout develop \
@@ -85,23 +84,24 @@ RUN git clone https://github.com/EOSIO/eos.git \
  && mkdir build \
  && cd build \
  && CC=clang-8 CXX=clang++-8 cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_AR=/usr/bin/llvm-ar-8 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-8 -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld .. \
- && CC=clang-8 CXX=clang++-8 ninja -j8 \
+ && CC=clang-8 CXX=clang++-8 ninja -j5 \
  && sudo ninja install \
- && sudo ln -s /usr/lib/x86_64-linux-gnu/cmake/eosio/ /usr/lib/cmake/eosio
+ && sudo ln -s /usr/lib/x86_64-linux-gnu/cmake/eosio/ /usr/lib/cmake/eosio \
+ && rm -rf /root/eos
 
 ### CDT
-USER gitpod
-WORKDIR /home/gitpod
+USER root
+WORKDIR /root
 RUN git clone https://github.com/EOSIO/eosio.cdt.git \
  && cd eosio.cdt \
  && git checkout develop \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd build \
- && cmake -GNinja .. \
- && ninja -j8
-
-ENV PATH="/home/gitpod/eos/build/bin/:/home/gitpod/eosio.cdt/build/bin/:${PATH}"
+ && cmake .. \
+ && make -j5 \
+ && sudo make install \
+ && rm -rf /root/eosio.cdt
 
 RUN echo "COPYING APP CONTRACTS"
 COPY ./contracts /home/gitpod/contracts
