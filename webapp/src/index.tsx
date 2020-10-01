@@ -26,14 +26,13 @@ export interface Entry {
 }
 
 const App: React.FC = () => {
-    const [api, setApi] = useState<Api>();
+    const [api] = useState<Api>(new Api({ rpc, signatureProvider: new JsSignatureProvider([privateKey]) }));
     const [error, setError] = useState<string>('');
     const [list, setList] = useState<any>();
 
     useEffect(() => {
-        setApi(new Api({ rpc, signatureProvider: new JsSignatureProvider([privateKey]) }));
         getList();
-    }, []);
+    }, [api]);
 
     const getList = async () => {
         setError('');
