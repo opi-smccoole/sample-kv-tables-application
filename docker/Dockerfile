@@ -44,7 +44,8 @@ RUN yes | unminimize \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
      nodejs \
- && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* \
+ && npm i -g yarn typescript
 ENV LANG=en_US.UTF-8
 
 ### cmake

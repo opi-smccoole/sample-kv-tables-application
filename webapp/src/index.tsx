@@ -11,6 +11,7 @@ import './styles.css';
 
 import { NewEntry } from './NewEntry'
 import { EntryComponent } from './Entry'
+import { Error } from './Error'
 
 import actions from './actions'
 
@@ -78,6 +79,7 @@ const App: React.FC = () => {
                 {list && list.map((entry: Entry) => <EntryComponent entry={entry} key={entry.uuid} upsert={upsert} del={del} />)}
                 {(!list || list.length === 0) && <div className="ui segment center aligned">No Tasks To Display, Create A New Task!</div>}
             </div>
+            {error && <Error error={error} />}
         </div>
     );
 }
