@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         getList();
-    }, [api]);
+    }, []);
 
     const getList = async () => {
         setError('');
@@ -42,7 +42,7 @@ const App: React.FC = () => {
             const transactionResult = await actions.getbyaccname(api);
             setList(transactionResult.processed.action_traces[0].return_value_data);
         } catch (e) {
-            setError(e);
+            setError(e.message);
         }
     }
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
             await actions.upsert(api, entry);
             await getList();
         } catch (e) {
-            setError(e);
+            setError(e.message);
         }
     }
 
@@ -66,7 +66,7 @@ const App: React.FC = () => {
             await actions.del(api, uuid);
             setList(list.filter((entry: Entry) => entry.uuid !== uuid));
         } catch (e) {
-            setError(e);
+            setError(e.message);
         }
     }
 
