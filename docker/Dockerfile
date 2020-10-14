@@ -53,7 +53,7 @@ WORKDIR /root
 RUN curl -LO https://cmake.org/files/v3.13/cmake-3.13.2.tar.gz \
  && tar -xzf cmake-3.13.2.tar.gz \
  && cd cmake-3.13.2 \
- && ./bootstrap --prefix=/usr/local \
+ && ./bootstrap --prefix=/usr/local --parallel=8 \
  && make -j8 \
  && make install \
  && cd /root \
@@ -64,7 +64,7 @@ RUN curl -LO https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.
  && tar -xjf boost_1_72_0.tar.bz2 \
  && cd boost_1_72_0 \
  && ./bootstrap.sh --prefix=/usr/local \
- && ./b2 --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -j8 install \
+ && ./b2 --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -j$(nproc) install \
  && cd /root \
  && rm -rf boost_1_72_0.tar.bz2 boost_1_72_0
 
@@ -76,8 +76,8 @@ RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
 ENV HOME=/home/gitpod
 
 ### eosio
-WORKDIR /root
 USER root
+WORKDIR /root
 RUN git clone https://github.com/EOSIO/eos.git \
  && cd eos \
  && git checkout develop \

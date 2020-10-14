@@ -14,8 +14,18 @@ BLOCKCHAIN_DATA_DIR=$ROOT_DIR/eosio/chain/data
 BLOCKCHAIN_CONFIG_DIR=$ROOT_DIR/eosio/chain/config
 WALLET_DIR="$ROOT_DIR/eosio-wallet"
 
+CONFIG_DIR="$ROOT_DIR/config-dir"
+
 function post_preactivate {
   curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}'
+}
+
+# $1 feature disgest to activate
+function activate_feature {
+  cleos push action eosio activate '["'"$1"'"]' -p eosio
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
 }
 
 # $1 account name
@@ -65,14 +75,6 @@ function setabi {
   fi
 }
 
-# $1 - account name
-# $2 - public key
-# $3 - private key
-function create_account {
-  cleos wallet import --private-key $3
-  cleos create account eosio $1 $2
-}
-
 # Move into the executable directory
 cd $ROOT_DIR/
 mkdir -p $CONFIG_DIR
@@ -110,37 +112,53 @@ done
 sleep 2s
 echo "Creating accounts and deploying contracts"
 
+sleep 1s
+cleos wallet unlock --password </password
+cleos create account eosio todo $SYSTEM_ACCOUNT_PUBLIC_KEY
+
 # preactivate concensus upgrades
 post_preactivate
 
 sleep 1s
-cleos wallet unlock --password </password
-setabi eosio $CONTRACTS_DIR/boot/boot.abi
-setcode eosio $CONTRACTS_DIR/boot/boot.wasm
-sleep 2s
-cleos push action eosio boot "[]" -p eosio@active
+setabi eosio $CONTRACTS_DIR/eosio.bios-v1.8.3/eosio.bios.abi
+setcode eosio $CONTRACTS_DIR/eosio.bios-v1.8.3/eosio.bios.wasm
 
 sleep 1s
-setcode eosio $CONTRACTS_DIR/system/system.wasm
-setabi eosio $CONTRACTS_DIR/system/system.abi
+activate_feature "299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"
+
+sleep 1s
+setabi eosio $CONTRACTS_DIR/eosio.bios/eosio.bios.abi
+setcode eosio $CONTRACTS_DIR/eosio.bios/eosio.bios.wasm
+
+sleep 1s
+activate_feature "825ee6288fb1373eab1b5187ec2f04f6eacb39cb3a97f356a07c91622dd61d16"
+activate_feature "c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071"
+activate_feature "4e7bf348da00a945489b2a681749eb56f5de00b900014e137ddae39f48f69d67"
+activate_feature "f0af56d2c5a48d60a4a5b5c903edfb7db3a736a94ed589d0b797df33ff9d3e1d"
+activate_feature "2652f5f96006294109b3dd0bbde63693f55324af452b799ee137a81a905eed25"
+activate_feature "8ba52fe7a3956c5cd3a656a3174b931d3bb2abb45578befc59f283ecd816a405"
+activate_feature "ad9e3d8f650687709fd68f4b90b41f7d825a365b02c23a636cef88ac2ac00c43"
+activate_feature "68dcaa34c0517d19666e6b33add67351d8c5f69e999ca1e37931bc410a297428"
+activate_feature "e0fb64b1085cc5538970158d05a009c24e276fb94e1a0bf6a528b48fbc4ff526"
+activate_feature "ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea99"
+activate_feature "4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f"
+activate_feature "1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241"
+activate_feature "bf61537fd21c61a60e542a5d66c3f6a78da0589336868307f94a82bccea84e88"
 
 sleep 1s
 setabi eosio $CONTRACTS_DIR/kv_bios/kv_bios.abi
 setcode eosio $CONTRACTS_DIR/kv_bios/kv_bios.wasm
 
-# token
 sleep 1s
-create_account todo $SYSTEM_ACCOUNT_PUBLIC_KEY $SYSTEM_ACCOUNT_PRIVATE_KEY
-
-cleos push action eosio ramkvlimits "[1024, 1024 * 4, 1024]" -p eosio@active
+cleos push action eosio ramkvlimits "[1024, 4096, 1024]" -p eosio@active
 
 sleep 1s
 cleos set abi todo $CONTRACTS_DIR/kv_todo/kv_todo.abi -p todo@active -p eosio@active
 cleos set code todo $CONTRACTS_DIR/kv_todo/kv_todo.wasm -p todo@active -p eosio@active
 
-cleos push action todo upsert '["1d0cb65c-a63e-48e7-bee7-ca99463aa698", "todo", "task1", false]' -p todo@active
-cleos push action todo upsert '["b728a7c4-cb53-4e08-b243-d60ea5e28c52", "todo", "task2", false]' -p todo@active
-cleos push action todo upsert '["1bfdf2fc-a5ff-4eeb-ac27-145a8ded295a", "todo", "task3", false]' -p todo@active
+cleos push action todo upsert '["bf581bee-9f2c-447b-94ad-78e4984b6f50", "todo", "task1", false]' -p todo@active
+cleos push action todo upsert '["b7b0d09d-a82b-44d9-b067-3bae2d02917e", "todo", "task2", false]' -p todo@active
+cleos push action todo upsert '["ac8acfe7-cd4e-4d22-8400-218b697a4517", "todo", "task3", false]' -p todo@active
 
 echo "All done initializing the blockchain"
 
