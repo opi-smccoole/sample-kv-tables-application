@@ -124,9 +124,15 @@ sleep 1s
 setcode eosio $CONTRACTS_DIR/system/system.wasm
 setabi eosio $CONTRACTS_DIR/system/system.abi
 
+sleep 1s
+setabi eosio $CONTRACTS_DIR/kv_bios/kv_bios.abi
+setcode eosio $CONTRACTS_DIR/kv_bios/kv_bios.wasm
+
 # token
 sleep 1s
 create_account todo $SYSTEM_ACCOUNT_PUBLIC_KEY $SYSTEM_ACCOUNT_PRIVATE_KEY
+
+cleos push action eosio ramkvlimits "[1024, 1024 * 4, 1024]" -p eosio@active
 
 sleep 1s
 cleos set abi todo $CONTRACTS_DIR/kv_todo/kv_todo.abi -p todo@active -p eosio@active

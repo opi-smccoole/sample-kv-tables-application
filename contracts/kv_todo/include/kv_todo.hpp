@@ -14,7 +14,7 @@ struct todo_entry {
 };
 
 class [[eosio::contract]] kv_todo : public contract {
-  struct [[eosio::table]] todo_table : eosio::kv::table<todo_entry, "kvtodo"_n> {
+  struct [[eosio::table]] todo_table : eosio::kv::table<todo_entry, "todo"_n> {
     KV_NAMED_INDEX("uuid"_n, uuid);
     KV_NAMED_INDEX("accname"_n, account_name);
     KV_NAMED_INDEX("task"_n, task)
@@ -43,5 +43,5 @@ class [[eosio::contract]] kv_todo : public contract {
       using del_action = action_wrapper<"del"_n, &kv_todo::del>;
 
   private:
-    todo_table todo_entries{"kvtodo"_n};
+    todo_table todo_entries{"todo"_n};
 };

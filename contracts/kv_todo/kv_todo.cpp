@@ -2,8 +2,12 @@
 
 [[eosio::action]]
 std::vector<todo_entry> kv_todo::getbyaccname(name account_name) {
-   auto begin_uuid = todo_entries.uuid.begin().value().get_uuid();
-   auto end_uuid = todo_entries.uuid.end().value().get_uuid();
+   // TODO: re-add conditional
+   auto begin_itr = todo_entries.uuid.begin();
+   auto end_itr   = todo_entries.uuid.rbegin();
+   
+   auto begin_uuid = begin_itr.value().get_uuid();
+   auto end_uuid   = end_itr.value().get_uuid();
 
    return todo_entries.account_name.range({begin_uuid, account_name}, {end_uuid, account_name});
 }

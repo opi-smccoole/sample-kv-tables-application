@@ -76,8 +76,8 @@ RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
 ENV HOME=/home/gitpod
 
 ### eosio
-USER root
 WORKDIR /root
+USER root
 RUN git clone https://github.com/EOSIO/eos.git \
  && cd eos \
  && git checkout develop \
