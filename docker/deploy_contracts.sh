@@ -144,6 +144,7 @@ activate_feature "ef43112c6543b88db2283a2e077278c315ae2c84719a8b25f25cc88565fbea
 activate_feature "4a90c00d55454dc5b059055ca213579c6ea856967712a56017487886a4d4cc0f"
 activate_feature "1a99a59d87e06e09ec5b028a9cbb7749b4a5ad8819004365d02dc4379a8b7241"
 activate_feature "bf61537fd21c61a60e542a5d66c3f6a78da0589336868307f94a82bccea84e88"
+activate_feature "5443fcf88330c586bc0e5f3dee10e7f63c76c00249c87fe4fbf7f38c082006b4"
 
 sleep 1s
 setabi eosio $CONTRACTS_DIR/kv_bios/kv_bios.abi
@@ -151,6 +152,13 @@ setcode eosio $CONTRACTS_DIR/kv_bios/kv_bios.wasm
 
 sleep 1s
 cleos push action eosio ramkvlimits "[1024, 4096, 1024]" -p eosio@active
+
+sleep 1s
+setabi eosio $CONTRACTS_DIR/ret_bios/ret_bios.abi
+setcode eosio $CONTRACTS_DIR/ret_bios/ret_bios.wasm
+
+sleep 1s
+cleos push action eosio retmaxlim "[]" -p eosio@active
 
 sleep 1s
 cleos set abi todo $CONTRACTS_DIR/kv_todo/kv_todo.abi -p todo@active -p eosio@active
