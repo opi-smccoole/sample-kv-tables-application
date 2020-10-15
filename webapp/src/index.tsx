@@ -40,7 +40,15 @@ const App: React.FC = () => {
 
         try {
             const transactionResult = await actions.getbyaccname(api);
-            setList(transactionResult.processed.action_traces[0].return_value_data);
+            const entries = transactionResult.processed.action_traces[0].return_value_data.map((entry: any) => {
+                return {
+                    uuid: entry.uuid,
+                    account_name: entry.account_name.field_1,
+                    task: entry.task.field_1,
+                    checked: entry.checked.field_1
+                };
+            });
+            setList(entries);
         } catch (e) {
             setError(e.message);
         }

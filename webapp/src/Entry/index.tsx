@@ -26,6 +26,11 @@ export const EntryComponent: React.FC<EntryProps> = ({ entry, upsert, del }: Ent
         setEditing(!editing);
     }
 
+    const save = async () => {
+        await update();
+        setEditing(!editing);
+    }
+
     const update = async () => {
         await upsert(mutableEntry);
     }
@@ -61,7 +66,7 @@ export const EntryComponent: React.FC<EntryProps> = ({ entry, upsert, del }: Ent
                             onChange={handleChange}>
                         </input>
                         <div className="ui icon buttons">
-                            <button className="ui button" onClick={e => update()}><i className="check icon"></i></button>
+                            <button className="ui button" onClick={e => save()}><i className="check icon"></i></button>
                             <button className="ui button" onClick={handleResetEditing}><i className="times icon"></i></button>
                         </div>
                     </div> }
