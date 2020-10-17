@@ -2,14 +2,10 @@
 
 [[eosio::action]]
 std::vector<todo_entry> kv_todo::getbyaccname(name account_name) {
-   // TODO: re-add conditional
-   auto begin_itr = todo_entries.uuid.begin();
-   auto end_itr   = todo_entries.uuid.rbegin();
-   
-   auto begin_uuid = begin_itr.value().get_uuid();
-   auto end_uuid   = end_itr.value().get_uuid();
+   std::string min_uuid = "00000000-0000-0000-0000-000000000000";
+   std::string max_uuid = "ffffffff-ffff-ffff-ffff-ffffffffffff";
 
-   return todo_entries.account_name.range({begin_uuid, account_name}, {end_uuid, account_name});
+   return todo_entries.account_name.range({min_uuid, account_name}, {max_uuid, account_name});
 }
 
 [[eosio::action]]
@@ -18,12 +14,20 @@ todo_entry kv_todo::upsert(const std::string& uuid,
                            const std::string& task,
                            bool checked) {
 
-   todo_entry todo_entry_update = {uuid, {uuid, account_name}, {uuid, task}, {uuid, checked}};
-
-   // we will pay for the entry
-   todo_entries.put(todo_entry_update, get_self());
+   require_auth(account_name);
 
    auto itr = todo_entries.uuid.find(uuid);
+   if (itr != todo_entries.uuid.end()) {
+      check(account_name == itr.value().get_account_name(), "Unauthorized");
+      todo_entry todo_entry_update = {itr.value().get_uuid(), {uuid, itr.value().get_account_name()}, {uuid, task}, {uuid, checked}, {uuid, itr.value().get_created()}};
+      todo_entries.put(todo_entry_update, get_self());
+   } else {
+      uint32_t created = eosio::current_time_point().sec_since_epoch();
+      todo_entry todo_entry_insert = {uuid, {uuid, account_name}, {uuid, task}, {uuid, checked}, {uuid, created}};
+      todo_entries.put(todo_entry_insert, get_self());
+   }
+
+   itr = todo_entries.uuid.find(uuid);
    return itr.value();
 }
 

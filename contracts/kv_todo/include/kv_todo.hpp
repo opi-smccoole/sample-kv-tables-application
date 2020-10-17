@@ -1,4 +1,5 @@
 #include <eosio/eosio.hpp>
+#include <eosio/system.hpp>
 using namespace eosio;
 
 struct todo_entry {
@@ -6,11 +7,13 @@ struct todo_entry {
   eosio::non_unique<std::string, eosio::name> account_name;
   eosio::non_unique<std::string, std::string> task;
   eosio::non_unique<std::string, bool> checked;
+  eosio::non_unique<std::string, uint32_t> created;
 
   std::string get_uuid() const { return uuid; }
   eosio::name get_account_name() const { return std::get<1>(account_name); }
   std::string get_task() const { return std::get<1>(task); }
   bool get_checked() const { return std::get<1>(checked); }
+  int get_created() const { return std::get<1>(created); }
 };
 
 class [[eosio::contract]] kv_todo : public contract {
@@ -19,6 +22,7 @@ class [[eosio::contract]] kv_todo : public contract {
     KV_NAMED_INDEX("accname"_n, account_name);
     KV_NAMED_INDEX("task"_n, task)
     KV_NAMED_INDEX("checked"_n, checked)
+    KV_NAMED_INDEX("created"_n, created)
 
     // constructor for our `kvtodo` table to setup and initialize it
     todo_table(eosio::name contract_name) { init(contract_name, uuid); }

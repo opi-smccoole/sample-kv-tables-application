@@ -23,6 +23,7 @@ export interface Entry {
     account_name: string,
     task: string,
     checked: boolean,
+    created: number,
 }
 
 const App: React.FC = () => {
@@ -45,8 +46,13 @@ const App: React.FC = () => {
                     uuid: entry.uuid,
                     account_name: entry.account_name.field_1,
                     task: entry.task.field_1,
-                    checked: entry.checked.field_1
+                    checked: entry.checked.field_1,
+                    created: entry.created.field_1,
                 };
+            }).sort((a: Entry, b: Entry) => {
+                if (a.created < b.created) return -1;
+                if (a.created > b.created) return 1;
+                return 0;
             });
             setList(entries);
         } catch (e) {
