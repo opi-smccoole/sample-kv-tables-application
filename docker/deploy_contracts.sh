@@ -166,6 +166,8 @@ cleos set code todo $CONTRACTS_DIR/kv_todo/kv_todo.wasm -p todo@active -p eosio@
 
 sleep 1s
 cleos push action todo upsert '["bf581bee-9f2c-447b-94ad-78e4984b6f51", "todo", "Write Hello World Contract", false]' -p todo@active
+cleos push action todo upsert '["b7b0d09d-a82b-44d9-b067-3bae2d02917e", "todo", "Start Blockchain", false]' -p todo@active
+cleos push action todo upsert '["ac8acfe7-cd4e-4d22-8400-218b697a4517", "todo", "Deploy Hello World Contract", false]' -p todo@active
 
 echo "All done initializing the blockchain"
 
