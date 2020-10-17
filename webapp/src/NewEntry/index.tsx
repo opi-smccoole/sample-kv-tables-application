@@ -26,7 +26,8 @@ export const NewEntry: React.FC<NewEntryProps> = ({ upsert }: NewEntryProps) => 
             uuid: uuid(),
             account_name: 'todo',
             task,
-            checked: false
+            checked: false,
+            created: 0
         });
         setTask('');
     }
