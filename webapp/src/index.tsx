@@ -15,7 +15,10 @@ import { Error } from './Error'
 
 import actions from './actions'
 
-const rpc = new JsonRpc(''); // nodeos and web server are on same port
+let endpoint = '';
+if (process.env.REACT_APP_IS_GITPOD !== 'true') endpoint = 'http://localhost:8888';
+
+const rpc = new JsonRpc(endpoint);
 const privateKey = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
 
 export interface Entry {

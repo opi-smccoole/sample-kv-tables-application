@@ -3,7 +3,8 @@
   "description": "Example Website",
   "main": "index.html",
   "scripts": {
-    "serve": "webpack-dev-server --mode development"
+    "serve": "webpack-dev-server --mode development",
+    "docker-run": "docker run --publish 8888:8888 bradlhart/sample-kv-tables:v0.0.5"
   },
   "author": "",
   "license": "ISC",

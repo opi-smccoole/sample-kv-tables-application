@@ -68,13 +68,6 @@ RUN curl -LO https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.
  && cd /root \
  && rm -rf boost_1_72_0.tar.bz2 boost_1_72_0
 
-### Gitpod user
-# '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
-RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
-    # passwordless sudo for users in the 'sudo' group
-    && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers
-ENV HOME=/home/gitpod
-
 ### eosio
 USER root
 WORKDIR /root
@@ -105,27 +98,9 @@ RUN git clone https://github.com/EOSIO/eosio.cdt.git \
  && rm -rf /root/eosio.cdt
 
 RUN echo "COPYING APP CONTRACTS"
-COPY ./contracts /home/gitpod/contracts
-COPY ./deploy_contracts.sh /home/gitpod/
-
-### nginx, /password $HOME/contracts and deploy_contracts.sh
-USER root
-WORKDIR /root
-RUN echo >/password && chown gitpod /password && chgrp gitpod /password \
- && chown -R gitpod /home/gitpod/contracts && chgrp -R gitpod /home/gitpod/contracts \
- && chown gitpod /home/gitpod/deploy_contracts.sh && chgrp gitpod /home/gitpod/deploy_contracts.sh \
- && >/run/nginx.pid \
- && chmod 666 /run/nginx.pid \
- && chmod 666 /var/log/nginx/* \
- && chmod 777 /var/lib/nginx /var/log/nginx
-
-### Gitpod user (2)
-WORKDIR $HOME
-USER gitpod
-# custom Bash prompt
-RUN { echo && echo "PS1='\[\e]0;\u \w\a\]\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[00m\] \\\$ '" ; } >> .bashrc
-# use sudo so that user does not get sudo usage info on (the first) login
-RUN sudo echo "Running 'sudo' for Gitpod: success"
+RUN mkdir -p "/opt/eosio/bin/contracts"
+COPY ./contracts /opt/eosio/bin/contracts
+COPY ./deploy_contracts.sh /opt/eosio/bin/
 
 ### wallet
 RUN cleos wallet create --to-console | tail -n 1 | sed 's/"//g' >/password \
@@ -135,13 +110,5 @@ RUN echo '\n\
 ' >$HOME/eosio-wallet/config.ini
 
 RUN echo "DEPLOYING CONTRACTS"
-RUN /bin/bash /home/gitpod/deploy_contracts.sh
-
-### checks
-# no root-owned files in the home directory
-RUN rm -f $HOME/.wget-hsts
-WORKDIR $HOME
-USER gitpod
-RUN notOwnedFile=$(find . -not "(" -user gitpod -and -group gitpod ")" -print -quit) \
-    && { [ -z "$notOwnedFile" ] \
-        || { echo "Error: not all files/dirs in $HOME are owned by 'gitpod' user & group"; exit 1; } }
+RUN mkdir -p "/opt/eosio/bin/config-dir"
+RUN /bin/bash /opt/eosio/bin/deploy_contracts.sh
