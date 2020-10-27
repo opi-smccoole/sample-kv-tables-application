@@ -38,11 +38,9 @@ module.exports = env => ({
         ],
     },
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODEOS_ENDPOINT': env.NODEOS_ENDPOINT
-            }
-        }),
+        new webpack.EnvironmentPlugin({
+            NODEOS_ENDPOINT: env.NODEOS_ENDPOINT
+        })
     ],
 
     devServer: {
