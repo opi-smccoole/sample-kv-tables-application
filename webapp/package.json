@@ -4,7 +4,7 @@
   "main": "index.html",
   "scripts": {
     "serve": "webpack-dev-server --mode development",
-    "serveInGitPod": "cross-env REACT_APP_IS_GITPOD=true webpack-dev-server --mode development",
+    "serveInGitPod": "webpack-dev-server --mode development --env.IS_GITPOD=true",
     "docker-run": "docker run --publish 8888:8888 bradlhart/sample-kv-tables:v0.0.5"
   },
   "author": "",
@@ -13,7 +13,6 @@
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
     "@types/uuid": "^8.3.0",
-    "cross-env": "^7.0.2",
     "css-loader": "^4.2.0",
     "file-loader": "^6.1.0",
     "source-map-loader": "^1.0.1",

@@ -16,7 +16,7 @@ import { Error } from './Error'
 import actions from './actions'
 
 let endpoint = '';
-if (process.env.REACT_APP_IS_GITPOD !== 'true') endpoint = 'http://localhost:8888';
+if (process.env.IS_GITPOD !== 'true') endpoint = 'http://localhost:8888';
 
 const rpc = new JsonRpc(endpoint);
 const privateKey = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
