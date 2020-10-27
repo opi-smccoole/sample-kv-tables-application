@@ -3,8 +3,8 @@
   "description": "Example Website",
   "main": "index.html",
   "scripts": {
-    "serve": "webpack-dev-server --mode development",
-    "serveInGitPod": "webpack-dev-server --mode development --env.IS_GITPOD=true",
+    "serve": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT='http://localhost:8081'",
+    "serveInGitPod": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT=''",
     "docker-run": "docker run --publish 8888:8888 bradlhart/sample-kv-tables:v0.0.5"
   },
   "author": "",

@@ -1,4 +1,6 @@
-module.exports = {
+var webpack = require('webpack');
+
+module.exports = env => ({
     mode: "development",
     devtool: "source-map",
     resolve: {
@@ -35,6 +37,13 @@ module.exports = {
               },
         ],
     },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODEOS_ENDPOINT': env.NODEOS_ENDPOINT
+            }
+        }),
+    ],
 
     devServer: {
         overlay: true,
@@ -42,4 +51,4 @@ module.exports = {
         sockPort: 443,
         allowedHosts: ['localhost', '.gitpod.io'],
     }
-};
+});
