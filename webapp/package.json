@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT='http://localhost:8888'",
     "serveInGitPod": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT=''",
-    "docker-run": "docker run --publish 8888:8888 bradlhart/sample-kv-tables:v0.0.5"
+    "docker-run": "docker-compose up"
   },
   "author": "",
   "license": "ISC",
