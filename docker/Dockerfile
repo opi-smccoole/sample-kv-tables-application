@@ -84,18 +84,26 @@ RUN git clone https://github.com/EOSIO/eos.git \
  && rm -rf /root/eos
 
 ### CDT
-USER root
-WORKDIR /root
-RUN git clone https://github.com/EOSIO/eosio.cdt.git \
- && cd eosio.cdt \
- && git checkout develop \
- && git submodule update --init --recursive \
- && mkdir build \
- && cd build \
- && cmake .. \
- && make -j5 \
- && sudo make install \
- && rm -rf /root/eosio.cdt
+#USER root
+#WORKDIR /root
+#RUN git clone https://github.com/EOSIO/eosio.cdt.git \
+# && cd eosio.cdt \
+# && git checkout develop \
+# && git submodule update --init --recursive \
+# && mkdir build \
+# && cd build \
+# && cmake .. \
+# && make -j5 \
+# && sudo make install \
+# && rm -rf /root/eosio.cdt
+
+RUN mkdir -p "/opt/eosio/binaries"
+COPY ./binaries /opt/eosio/binaries
+### CDT
+user root
+workdir /root
+run apt-get update \
+ && apt-get install -y /opt/eosio/binaries/eosio.cdt_1.7.0-develop_amd64.deb
 
 RUN echo "COPYING APP CONTRACTS"
 RUN mkdir -p "/opt/eosio/bin/contracts"
