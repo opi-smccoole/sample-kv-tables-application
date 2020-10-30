@@ -3,7 +3,9 @@
   "description": "Example Website",
   "main": "index.html",
   "scripts": {
-    "serve": "webpack-dev-server --mode development"
+    "serve": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT='http://localhost:8888'",
+    "serveInGitPod": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT=''",
+    "docker-run": "docker-compose up"
   },
   "author": "",
   "license": "ISC",
