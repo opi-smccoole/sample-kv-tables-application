@@ -38,7 +38,7 @@ function start_wallet {
   nohup keosd --unlock-timeout 999999999 --wallet-dir $WALLET_DIR --http-server-address 127.0.0.1:8900 2>&1 &
   sleep 1s
   wallet_password=$(cleos wallet create --to-console | awk 'FNR > 3 { print $1 }' | tr -d '"')
-  echo $wallet_password > "$CONFIG_DIR"/keys/default_wallet_password.txt
+  echo $wallet_password > /password
 
   cleos wallet import --private-key $SYSTEM_ACCOUNT_PRIVATE_KEY
 }

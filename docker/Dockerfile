@@ -37,13 +37,6 @@ RUN mkdir -p "/opt/eosio/bin/contracts"
 COPY ./contracts /opt/eosio/bin/contracts
 COPY ./deploy_contracts.sh /opt/eosio/bin/
 
-### wallet
-RUN cleos wallet create --to-console | tail -n 1 | sed 's/"//g' >/password \
-    && cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
-RUN echo '\n\
-   unlock-timeout = 31536000 \n\
-' >$HOME/eosio-wallet/config.ini
-
 RUN echo "DEPLOYING CONTRACTS"
 RUN mkdir -p "/opt/eosio/bin/config-dir"
 RUN /bin/bash /opt/eosio/bin/deploy_contracts.sh
