@@ -2,6 +2,7 @@
 *.log
 *.wasm
 !*abi.wasm
+*.deb
 dist
 build
 node_modules

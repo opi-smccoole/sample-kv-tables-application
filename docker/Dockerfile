@@ -1,45 +1,10 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ### base
-RUN yes | unminimize \
- && apt-get update \
- && apt-get install -yq \
-     binutils-gold \
-     build-essential \
-     clang-tools-8 \
-     curl \
-     doxygen \
-     g++-8 \
-     git \
-     jq \
-     less \
-     libcurl4-gnutls-dev \
-     libgflags-dev \
-     libgmp3-dev \
-     libssl-dev \
-     libusb-1.0-0-dev \
-     lld-8 \
-     llvm-7 \
-     llvm-7-dev \
-     locales \
-     nano \
-     nginx \
-     ninja-build \
-     pkg-config \
-     python \
-     sudo \
-     vim \
-     software-properties-common \
-     wget \
-     xz-utils \
-     zlib1g-dev \
- && update-alternatives --remove-all cc \
- && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-8 100 \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 \
- && update-alternatives --remove-all c++ \
- && update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-8 100 \
- && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100 \
- && update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-8 100 \
+USER root
+WORKDIR /root
+RUN apt-get update -y \
+ && apt-get install -y wget sudo curl locales \
  && locale-gen en_US.UTF-8 \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
@@ -48,62 +13,25 @@ RUN yes | unminimize \
  && npm i -g yarn typescript
 ENV LANG=en_US.UTF-8
 
-### cmake
-WORKDIR /root
-RUN curl -LO https://cmake.org/files/v3.13/cmake-3.13.2.tar.gz \
- && tar -xzf cmake-3.13.2.tar.gz \
- && cd cmake-3.13.2 \
- && ./bootstrap --prefix=/usr/local --parallel=8 \
- && make -j8 \
- && make install \
- && cd /root \
- && rm -rf cmake-3.13.2.tar.gz cmake-3.13.2
-
-### boost
-RUN curl -LO https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2 \
- && tar -xjf boost_1_72_0.tar.bz2 \
- && cd boost_1_72_0 \
- && ./bootstrap.sh --prefix=/usr/local \
- && ./b2 --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -j$(nproc) install \
- && cd /root \
- && rm -rf boost_1_72_0.tar.bz2 boost_1_72_0
-
-### eosio
-USER root
-WORKDIR /root
-RUN git clone https://github.com/EOSIO/eos.git \
- && cd eos \
- && git checkout develop \
- && git submodule update --init --recursive \
- && mkdir build \
- && cd build \
- && CC=clang-8 CXX=clang++-8 cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_AR=/usr/bin/llvm-ar-8 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-8 -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld .. \
- && CC=clang-8 CXX=clang++-8 ninja -j5 \
- && sudo ninja install \
- && sudo ln -s /usr/lib/x86_64-linux-gnu/cmake/eosio/ /usr/lib/cmake/eosio \
- && rm -rf /root/eos
-
-### CDT
-#USER root
-#WORKDIR /root
-#RUN git clone https://github.com/EOSIO/eosio.cdt.git \
-# && cd eosio.cdt \
-# && git checkout develop \
-# && git submodule update --init --recursive \
-# && mkdir build \
-# && cd build \
-# && cmake .. \
-# && make -j5 \
-# && sudo make install \
-# && rm -rf /root/eosio.cdt
-
+### Remove after release
 RUN mkdir -p "/opt/eosio/binaries"
 COPY ./binaries /opt/eosio/binaries
+
+### eosio
+#RUN wget https://github.com/EOSIO/eos/releases/download/v2.0.0/eosio_2.0.0-1-ubuntu-18.04_amd64.deb \
+# && apt-get update && sudo apt install -y ./eosio_2.0.0-1-ubuntu-18.04_amd64.deb \
+# && rm ./eosio_2.0.0-1-ubuntu-18.04_amd64.deb
+RUN apt-get update \
+ && sudo apt-get install -y /opt/eosio/binaries/eosio_2.1.0-alpha2_amd64.deb \
+ && rm /opt/eosio/binaries/eosio_2.1.0-alpha2_amd64.deb
+
 ### CDT
-user root
-workdir /root
-run apt-get update \
- && apt-get install -y /opt/eosio/binaries/eosio.cdt_1.7.0-develop_amd64.deb
+#RUN wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.7.0/eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb \
+# && apt-get update && sudo apt install -y ./eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb \
+# && rm ./eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb
+RUN apt-get update \
+ && sudo apt-get install -y /opt/eosio/binaries/eosio.cdt_1.7.0-develop_amd64.deb \
+ && rm /opt/eosio/binaries/eosio.cdt_1.7.0-develop_amd64.deb
 
 RUN echo "COPYING APP CONTRACTS"
 RUN mkdir -p "/opt/eosio/bin/contracts"

@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT='http://localhost:8888'",
     "serveInGitPod": "webpack-dev-server --mode development --env.NODEOS_ENDPOINT=''",
-    "docker-run": "docker-compose up"
+    "docker-run": "docker-compose down -v && docker-compose up",
+    "docker-persistent": "docker-compose up"
   },
   "author": "",
   "license": "ISC",
