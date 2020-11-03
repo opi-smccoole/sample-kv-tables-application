@@ -2,7 +2,6 @@ FROM ubuntu:20.04
 
 ### base
 USER root
-WORKDIR /root
 RUN apt-get update -y \
  && apt-get install -y wget sudo curl locales \
  && locale-gen en_US.UTF-8 \
