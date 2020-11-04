@@ -19,7 +19,7 @@ if [ -z "$RUNNING_IN_GITPOD" ]; then
 else
   echo "Running in Gitpod..."
   ROOT_DIR="/home/gitpod"
-  CONTRACTS_DIR="$ROOT_DIR/contracts"
+  CONTRACTS_DIR="/opt/eosio/bin/contracts"
   BLOCKCHAIN_DATA_DIR=$ROOT_DIR/eosio/chain/data
   BLOCKCHAIN_CONFIG_DIR=$ROOT_DIR/eosio/chain/config
   WALLET_DIR="$ROOT_DIR/eosio-wallet"
@@ -142,12 +142,6 @@ echo "Creating accounts and deploying contracts"
 sleep 1s
 start_wallet
 cleos create account eosio todo $SYSTEM_ACCOUNT_PUBLIC_KEY
-
-if [ ! -z "$RUNNING_IN_GITPOD" ]; then
-  echo "COPYING APP CONTRACT"
-  echo "GITPOD_WORKSPACE_ROOT: $GITPOD_WORKSPACE_ROOT"
-  cp $GITPOD_WORKSPACE_ROOT/docker/contracts/* $CONTRACTS_DIR/
-fi
 
 # preactivate concensus upgrades
 post_preactivate
