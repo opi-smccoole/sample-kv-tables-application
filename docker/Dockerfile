@@ -1,9 +1,9 @@
 FROM ubuntu:20.04
 
 ### base
-USER root
-RUN apt-get update -y \
- && apt-get install -yq wget sudo curl nginx vim nano locales \
+RUN yes | unminimize \
+ && apt-get update -y \
+ && apt-get install -yq wget sudo curl nginx vim nano python locales \
  && locale-gen en_US.UTF-8 \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
