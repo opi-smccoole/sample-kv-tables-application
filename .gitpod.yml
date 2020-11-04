@@ -15,6 +15,6 @@ ports:
 tasks:
 - before: cd webapp
   init: yarn
-  command: nginx -c $PWD/nginx.conf; yarn run serveInGitPod
+  command: nginx -c $PWD/webapp/nginx.conf; yarn run serveInGitPod
 - before: chmod 755 $PWD/docker/deploy_contracts.sh && cleos wallet unlock --password </password
   command: $PWD/docker/deploy_contracts.sh "" IS_GITPOD
