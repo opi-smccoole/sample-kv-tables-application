@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 ### base
 USER root
 RUN apt-get update -y \
- && apt-get install -y wget sudo curl locales \
+ && apt-get install -yq wget sudo curl nginx vim nano locales \
  && locale-gen en_US.UTF-8 \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
